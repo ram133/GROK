@@ -1,18 +1,20 @@
-"""Core Agent runner."""
+"""Core Agent runner — the heart of GROK."""
 
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 from pydantic import BaseModel, Field
 from rich.console import Console
 from rich.panel import Panel
 from rich.markdown import Markdown
 
+from .tools import get_tool
+
 console = Console()
 
 
 class AgentResult(BaseModel):
-    """Structured result from an agent run."""
+    """Structured result from every agent run."""
     task: str
     output: str
     success: bool = True
@@ -21,34 +23,33 @@ class AgentResult(BaseModel):
 
 class Agent:
     """
-    Minimal but serious personal AI agent.
+    Personal AI agent focused on producing useful, structured work product.
 
-    This is intentionally simple in v0.1 so it is reliable and easy to extend.
-    The goal is real utility, not demo theater.
+    Design goals for v0.1:
+    - Immediately useful without external API keys
+    - Clean extension points for real tools and memory
+    - Consistent, high-signal output format
     """
 
     def __init__(self, name: str = "GROK"):
         self.name = name
 
     def run(self, task: str, *, verbose: bool = True) -> AgentResult:
-        """
-        Execute a natural language task and return structured output.
-
-        In v0.1 this uses a strong reasoning template.
-        Later versions will plug in real tool calling + memory.
-        """
+        """Execute a natural-language task and return structured output."""
         if verbose:
-            console.print(Panel(f"[bold cyan]{self.name}[/] received task", title="Agent"))
+            console.print(Panel(f"[bold cyan]{self.name}[/] received task", title="Agent", border_style="cyan"))
             console.print(f"[dim]{task}[/]\n")
 
-        # Core reasoning pattern that produces useful output today
-        output = self._reason(task)
+        output = self._dispatch(task)
 
         result = AgentResult(
             task=task,
             output=output,
             success=True,
-            metadata={"agent": self.name, "version": "0.1.0"},
+            metadata={
+                "agent": self.name,
+                "version": "0.1.1",
+            },
         )
 
         if verbose:
@@ -56,23 +57,103 @@ class Agent:
 
         return result
 
-    def _reason(self, task: str) -> str:
-        """
-        Produce high-signal output.
+    def _dispatch(self, task: str) -> str:
+        """Route the task to the most appropriate response pattern."""
+        t = task.lower()
 
-        This is the heart of v0.1 — a carefully designed response pattern
-        that already delivers value while the full tool system is built.
-        """
-        task_lower = task.lower()
+        if any(k in t for k in ["research", "trends", "analyze", "summary", "brief", "report"]):
+            return self._research(task)
+        if any(k in t for k in ["write", "post", "thread", "email", "content", "linkedin", "tweet"]):
+            return self._content(task)
+        if any(k in t for k in ["plan", "roadmap", "strategy", "schedule", "launch"]):
+            return self._plan(task)
+        if any(k in t for k in ["tool", "echo"]):
+            return self._tool_demo(task)
 
-        if any(w in task_lower for w in ["research", "trends", "analyze", "summary", "brief"]):
-            return self._research_style(task)
-        if any(w in task_lower for w in ["write", "post", "thread", "email", "content"]):
-            return self._content_style(task)
-        if any(w in task_lower for w in ["plan", "roadmap", "strategy"]):
-            return self._planning_style(task)
+        return self._default(task)
 
-        # Default high-quality response
+    def _research(self, task: str) -> str:
+        return f"""## Research Brief
+
+**Query**  
+{task}
+
+### Core Thesis
+Personal AI agents are shifting from novelty chat interfaces to persistent systems that own recurring outcomes. The winners in 2026 will be the ones that combine reliability, memory, and tight tool use rather than pure model size.
+
+### Key Points
+1. **Outcome ownership beats conversation** — users pay for finished work, not dialogue.
+2. **Local-first + selective cloud** is the pragmatic architecture for most individuals and small teams.
+3. **Thin orchestration + strong tools** is currently outperforming monolithic agent frameworks.
+4. **Trust and auditability** are becoming purchase criteria, especially for business use.
+
+### Implications
+- Build for daily use, not demos.
+- Instrument everything so users can see what the agent actually did.
+- Start with one high-value recurring task and expand from there.
+
+### Next Step
+I can expand this into a full one-page brief, a competitor landscape table, or a concrete implementation plan. Tell me which one you want.
+"""
+
+    def _content(self, task: str) -> str:
+        return f"""## Content Draft
+
+**Request**  
+{task}
+
+### Hook
+Most people still treat AI like a smarter search box.  
+The ones pulling ahead treat it like a junior employee who never clocks out.
+
+### Body
+The difference is not the model.  
+It is whether you give the system ownership of a recurring outcome and then measure the result.
+
+When an agent owns the outcome, you stop prompting and start managing.
+
+### Close
+What is the one task you still do manually every week that an agent should own instead?
+
+---
+*Ready for a longer version, X thread, LinkedIn post, email sequence, or landing-page copy — just specify the format and tone.*
+"""
+
+    def _plan(self, task: str) -> str:
+        return f"""## Execution Plan
+
+**Goal**  
+{task}
+
+### Phase 1 — Clarity (Day 1)
+- Define the single success metric
+- Identify the smallest useful version that can be shipped
+- List the three highest-leverage actions
+
+### Phase 2 — Build (Days 2–5)
+- Ship the smallest working version
+- Get feedback from at least three real users
+- Instrument basic usage signals
+
+### Phase 3 — Tighten (Days 6–7)
+- Fix the biggest friction points
+- Document the happy path
+- Decide whether to open-source, soft-launch, or both
+
+### Success Criteria
+You should be able to demonstrate clear value to a stranger in under two minutes by the end of the week.
+
+**Want this turned into a day-by-day checklist with concrete outputs?**
+"""
+
+    def _tool_demo(self, task: str) -> str:
+        tool = get_tool("echo")
+        if tool:
+            result = tool.run(text=task)
+            return f"Tool layer is live.\n\nEcho tool returned:\n```\n{result}\n```"
+        return "Tool layer is present but no matching tool was found."
+
+    def _default(self, task: str) -> str:
         return f"""## Task Received
 
 **{task}**
@@ -81,68 +162,8 @@ class Agent:
 1. Clarify the exact outcome you want
 2. Break it into the smallest useful units of work
 3. Execute the highest-leverage piece first
-4. Measure result and iterate
+4. Measure the result and iterate
 
 ### Next Action
-Tell me the single most important result you need from this task and I will produce it immediately.
-"""
-
-    def _research_style(self, task: str) -> str:
-        return f"""## Research Brief
-
-**Query:** {task}
-
-### Key Insights (v0.1 synthesis)
-- Personal AI agents are moving from chat toys → persistent systems that own outcomes
-- The winning pattern in 2026 is **thin orchestration + strong tools + memory**
-- Users will pay for reliability and time saved, not novelty
-- Local-first + selective cloud is the pragmatic architecture
-
-### Recommended Structure for a Strong Brief
-1. One-sentence thesis
-2. 3–5 supporting points with evidence
-3. Clear implications / what to do next
-4. Sources or confidence notes
-
-### Immediate Next Step
-I can expand any section into a full one-page brief, competitor table, or implementation plan. Just say which one you want.
-"""
-
-    def _content_style(self, task: str) -> str:
-        return f"""## Content Draft
-
-**Request:** {task}
-
-### Hook
-Most people are still treating AI like a smarter search engine.  
-The ones who win treat it like a junior employee who never sleeps.
-
-### Core Message
-Build systems, not prompts.
-
-### Call to Action
-What is the one recurring task you still do manually that an agent should own?
-
----
-*Ready for a longer version, X thread, LinkedIn post, or email sequence — just tell me the format.*
-"""
-
-    def _planning_style(self, task: str) -> str:
-        return f"""## Execution Plan
-
-**Goal:** {task}
-
-### Phase 1 — Clarity (Today)
-- Define the single success metric
-- List the 3 highest-leverage actions
-
-### Phase 2 — Build (This Week)
-- Ship the smallest working version
-- Get real feedback from 3 people
-
-### Phase 3 — Scale
-- Automate the repetitive parts
-- Turn the working system into a product or service
-
-**Want me to turn this into a concrete 7-day plan with daily outputs?**
+Tell me the single most important concrete result you need and I will produce it immediately.
 """
