@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "grok-agent"
+version = "0.1.0"
+description = "Personal AI Agent Toolkit — ship real automations fast"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Clifford Ray Hackett", email = "3659745@gmail.com"}
+]
+keywords = ["ai", "agents", "automation", "llm", "personal-ai"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "rich>=13.0",
+    "typer>=0.9",
+    "pydantic>=2.0",
+    "httpx>=0.25",
+]
+
+[project.scripts]
+grok = "grok.cli.main:app"
+
+[project.urls]
+Homepage = "https://github.com/ram133/GROK"
+Repository = "https://github.com/ram133/GROK"
