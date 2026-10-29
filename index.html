@@ -1,113 +1,649 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ram133 · All Repositories</title>
-<style>
-body{font-family:system-ui,sans-serif;background:#0d1117;color:#e6edf3;margin:0;padding:1.5rem;line-height:1.4}
-.container{max-width:800px;margin:0 auto}
-h1{font-size:1.5rem;margin-bottom:.3rem}
-h1 a{color:#58a6ff;text-decoration:none}
-.sub{color:#8b949e;font-size:.9rem;margin-bottom:1.2rem}
-.count{display:inline-block;background:#161b22;border:1px solid #30363d;border-radius:999px;padding:.2rem .8rem;font-size:.8rem;color:#8b949e}
-ul{list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.4rem;margin-top:1.2rem}
-li a{display:block;background:#161b22;border:1px solid #30363d;border-radius:6px;padding:.5rem .7rem;color:#58a6ff;text-decoration:none;font-size:.9rem}
-li a:hover{border-color:#58a6ff}
-footer{margin-top:2rem;font-size:.8rem;color:#8b949e;border-top:1px solid #30363d;padding-top:1rem}
-footer a{color:#58a6ff}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GROK — Personal AI Agent Toolkit | Powered by Grok (xAI)</title>
+  <meta name="description" content="Ship real automations, research, and content systems in minutes. A living showcase of what Grok can actually deliver when treated as a serious engineering partner." />
+  <meta name="theme-color" content="#0a0a0b" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0b;
+      --bg-elevated: #111113;
+      --bg-card: #161618;
+      --border: #27272a;
+      --border-hover: #3f3f46;
+      --text: #fafafa;
+      --text-muted: #a1a1aa;
+      --text-dim: #71717a;
+      --accent: #22d3ee;
+      --accent-dim: #0891b2;
+      --purple: #a78bfa;
+      --green: #34d399;
+      --orange: #fb923c;
+      --radius: 12px;
+      --font: 'Inter', system-ui, -apple-system, sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* subtle grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(34, 211, 238, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px);
+      background-size: 64px 64px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(16px);
+      background: rgba(10, 10, 11, 0.8);
+      border-bottom: 1px solid var(--border);
+      padding: 0.9rem 0;
+    }
+    nav .inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .logo {
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .logo span { color: var(--accent); }
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.55rem 1.1rem;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-decoration: none;
+      transition: all 0.15s;
+      border: 1px solid transparent;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #0a0a0b;
+    }
+    .btn-primary:hover {
+      background: #67e8f9;
+      transform: translateY(-1px);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--border);
+    }
+    .btn-ghost:hover {
+      border-color: var(--border-hover);
+      background: var(--bg-elevated);
+    }
+
+    /* HERO */
+    .hero {
+      padding: 5rem 0 4rem;
+      text-align: center;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(34, 211, 238, 0.08);
+      border: 1px solid rgba(34, 211, 238, 0.25);
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      margin-bottom: 1.5rem;
+    }
+    .badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 3.75rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin-bottom: 1.25rem;
+    }
+    h1 .gradient {
+      background: linear-gradient(135deg, #22d3ee 0%, #a78bfa 50%, #f472b6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      max-width: 620px;
+      margin: 0 auto 2.25rem;
+      line-height: 1.65;
+    }
+    .hero-cta {
+      display: flex;
+      gap: 0.85rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+    }
+    .code-preview {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      max-width: 640px;
+      margin: 0 auto;
+      text-align: left;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      overflow-x: auto;
+    }
+    .code-preview .comment { color: var(--text-dim); }
+    .code-preview .cmd { color: var(--accent); }
+    .code-preview .arg { color: var(--purple); }
+
+    /* SECTIONS */
+    section {
+      padding: 4.5rem 0;
+    }
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    h2 {
+      font-size: clamp(1.75rem, 4vw, 2.25rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+    }
+    .section-desc {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 560px;
+      margin-bottom: 2.5rem;
+    }
+
+    /* CAPABILITIES GRID */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      background: rgba(34, 211, 238, 0.1);
+    }
+    .card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+    .card p {
+      color: var(--text-muted);
+      font-size: 0.925rem;
+    }
+    .status {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      margin-top: 0.75rem;
+    }
+    .status-live {
+      background: rgba(52, 211, 153, 0.15);
+      color: var(--green);
+    }
+
+    /* INTEGRATIONS */
+    .integrations {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 0.85rem;
+    }
+    .integration {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.1rem 0.9rem;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .integration:hover {
+      border-color: var(--accent);
+      background: rgba(34, 211, 238, 0.05);
+    }
+    .integration .icon {
+      font-size: 1.6rem;
+      margin-bottom: 0.4rem;
+    }
+    .integration .name {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .integration .desc {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      margin-top: 0.2rem;
+    }
+
+    /* SHOWCASE / PHILOSOPHY */
+    .philosophy {
+      background: linear-gradient(180deg, transparent, rgba(34, 211, 238, 0.04), transparent);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .quote {
+      font-size: 1.35rem;
+      font-weight: 500;
+      max-width: 720px;
+      margin: 0 auto;
+      text-align: center;
+      line-height: 1.55;
+      color: var(--text);
+    }
+    .quote span { color: var(--accent); }
+
+    /* ROADMAP */
+    .roadmap {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+    .phase {
+      position: relative;
+      padding-left: 1.5rem;
+      border-left: 2px solid var(--border);
+    }
+    .phase.active { border-left-color: var(--accent); }
+    .phase h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .phase ul {
+      list-style: none;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .phase li {
+      margin-bottom: 0.35rem;
+      padding-left: 1rem;
+      position: relative;
+    }
+    .phase li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--text-dim);
+    }
+
+    /* CTA */
+    .final-cta {
+      text-align: center;
+      padding: 5rem 0;
+    }
+    .final-cta h2 {
+      margin-bottom: 0.75rem;
+    }
+    .final-cta p {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 0;
+      color: var(--text-dim);
+      font-size: 0.875rem;
+    }
+    footer .inner {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    footer a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+    footer a:hover { color: var(--accent); }
+    .footer-links {
+      display: flex;
+      gap: 1.25rem;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 640px) {
+      .nav-links a:not(.btn) { display: none; }
+      .hero { padding: 3.5rem 0 3rem; }
+      .code-preview { font-size: 0.75rem; }
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-<header>
-<h1><a href="https://github.com/ram133">ram133</a> · Repository Index</h1>
-<p class="sub">Clifford Ray Hackett · Guam, USA</p>
-<span class="count">78 repositories</span>
-</header>
-<ul>
-      <li><a href="https://github.com/ram133/.github">.github</a></li>
-      <li><a href="https://github.com/ram133/2509">2509</a></li>
-      <li><a href="https://github.com/ram133/5">5</a></li>
-      <li><a href="https://github.com/ram133/ADA">ADA</a></li>
-      <li><a href="https://github.com/ram133/AI">AI</a></li>
-      <li><a href="https://github.com/ram133/AutoGPT">AutoGPT</a></li>
-      <li><a href="https://github.com/ram133/ChatGPT">ChatGPT</a></li>
-      <li><a href="https://github.com/ram133/DOCOMO">DOCOMO</a></li>
-      <li><a href="https://github.com/ram133/GROK">GROK</a></li>
-      <li><a href="https://github.com/ram133/Gemini">Gemini</a></li>
-      <li><a href="https://github.com/ram133/How-to-Make-a-Computer-Operating-System">How-to-Make-a-Computer-Operating-System</a></li>
-      <li><a href="https://github.com/ram133/MAX">MAX</a></li>
-      <li><a href="https://github.com/ram133/NEWS">NEWS</a></li>
-      <li><a href="https://github.com/ram133/PHP-Download-Counter">PHP-Download-Counter</a></li>
-      <li><a href="https://github.com/ram133/Qwen">Qwen</a></li>
-      <li><a href="https://github.com/ram133/Qwen3.8">Qwen3.8</a></li>
-      <li><a href="https://github.com/ram133/Scweet">Scweet</a></li>
-      <li><a href="https://github.com/ram133/XActions">XActions</a></li>
-      <li><a href="https://github.com/ram133/agent">agent</a></li>
-      <li><a href="https://github.com/ram133/agentdb">agentdb</a></li>
-      <li><a href="https://github.com/ram133/api">api</a></li>
-      <li><a href="https://github.com/ram133/api-vault">api-vault</a></li>
-      <li><a href="https://github.com/ram133/apps-script-samples">apps-script-samples</a></li>
-      <li><a href="https://github.com/ram133/asset-store">asset-store</a></li>
-      <li><a href="https://github.com/ram133/audio-presets">audio-presets</a></li>
-      <li><a href="https://github.com/ram133/bot2">bot2</a></li>
-      <li><a href="https://github.com/ram133/bot3">bot3</a></li>
-      <li><a href="https://github.com/ram133/browser-use">browser-use</a></li>
-      <li><a href="https://github.com/ram133/cli">cli</a></li>
-      <li><a href="https://github.com/ram133/code-boilerplates">code-boilerplates</a></li>
-      <li><a href="https://github.com/ram133/coin">coin</a></li>
-      <li><a href="https://github.com/ram133/coin2">coin2</a></li>
-      <li><a href="https://github.com/ram133/coin3">coin3</a></li>
-      <li><a href="https://github.com/ram133/coin4">coin4</a></li>
-      <li><a href="https://github.com/ram133/coin5">coin5</a></li>
-      <li><a href="https://github.com/ram133/cross-post-automation">cross-post-automation</a></li>
-      <li><a href="https://github.com/ram133/design-assets">design-assets</a></li>
-      <li><a href="https://github.com/ram133/devitils">devitils</a></li>
-      <li><a href="https://github.com/ram133/digital_factory">digital_factory</a></li>
-      <li><a href="https://github.com/ram133/eliza">eliza</a></li>
-      <li><a href="https://github.com/ram133/everything-claude-code">everything-claude-code</a></li>
-      <li><a href="https://github.com/ram133/fastgpt-cloud">fastgpt-cloud</a></li>
-      <li><a href="https://github.com/ram133/femtoclaw">femtoclaw</a></li>
-      <li><a href="https://github.com/ram133/gas-microsaas">gas-microsaas</a></li>
-      <li><a href="https://github.com/ram133/guamcoin">guamcoin</a></li>
-      <li><a href="https://github.com/ram133/gyd">gyd</a></li>
-      <li><a href="https://github.com/ram133/jFeed">jFeed</a></li>
-      <li><a href="https://github.com/ram133/jsonframe-cheerio">jsonframe-cheerio</a></li>
-      <li><a href="https://github.com/ram133/langchain">langchain</a></li>
-      <li><a href="https://github.com/ram133/max-git-system">max-git-system</a></li>
-      <li><a href="https://github.com/ram133/mcu_quantum_project">mcu_quantum_project</a></li>
-      <li><a href="https://github.com/ram133/micro-saas-kit">micro-saas-kit</a></li>
-      <li><a href="https://github.com/ram133/nanoGPT">nanoGPT</a></li>
-      <li><a href="https://github.com/ram133/niche-directory">niche-directory</a></li>
-      <li><a href="https://github.com/ram133/nocodb-cloud">nocodb-cloud</a></li>
-      <li><a href="https://github.com/ram133/oh-my-cli">oh-my-cli</a></li>
-      <li><a href="https://github.com/ram133/ollama">ollama</a></li>
-      <li><a href="https://github.com/ram133/open-webui-cloud">open-webui-cloud</a></li>
-      <li><a href="https://github.com/ram133/openclaw">openclaw</a></li>
-      <li><a href="https://github.com/ram133/picoclaw">picoclaw</a></li>
-      <li><a href="https://github.com/ram133/prompt-pack">prompt-pack</a></li>
-      <li><a href="https://github.com/ram133/qwen-code-action">qwen-code-action</a></li>
-      <li><a href="https://github.com/ram133/ram133">ram133</a></li>
-      <li><a href="https://github.com/ram133/raycoin">raycoin</a></li>
-      <li><a href="https://github.com/ram133/rayswallet">rayswallet</a></li>
-      <li><a href="https://github.com/ram133/simple-ipn">simple-ipn</a></li>
-      <li><a href="https://github.com/ram133/site-api">site-api</a></li>
-      <li><a href="https://github.com/ram133/site-assets">site-assets</a></li>
-      <li><a href="https://github.com/ram133/site-core">site-core</a></li>
-      <li><a href="https://github.com/ram133/site-ui">site-ui</a></li>
-      <li><a href="https://github.com/ram133/site-utils">site-utils</a></li>
-      <li><a href="https://github.com/ram133/stable-diffusion-webui">stable-diffusion-webui</a></li>
-      <li><a href="https://github.com/ram133/supabase">supabase</a></li>
-      <li><a href="https://github.com/ram133/template-store">template-store</a></li>
-      <li><a href="https://github.com/ram133/twikit">twikit</a></li>
-      <li><a href="https://github.com/ram133/vuemmerce">vuemmerce</a></li>
-      <li><a href="https://github.com/ram133/web-llm-chat">web-llm-chat</a></li>
-      <li><a href="https://github.com/ram133/x-tweet-scraper">x-tweet-scraper</a></li>
-</ul>
-<footer>
-Updated 2026-10-29 · <a href="https://github.com/ram133/MAX">Canonical index in MAX</a>
-</footer>
-</div>
+  <!-- NAV -->
+  <nav>
+    <div class="container inner">
+      <a href="#" class="logo">GROK <span>·</span> powered by Grok</a>
+      <div class="nav-links">
+        <a href="#capabilities">Capabilities</a>
+        <a href="#integrations">Integrations</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="https://github.com/ram133/GROK" class="btn btn-ghost" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/ram133/GROK" class="btn btn-primary" target="_blank" rel="noopener">Star the repo</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="container">
+      <div class="badge">v0.1.1 · Live & shipping</div>
+      <h1>Personal AI agents that<br /><span class="gradient">actually ship work</span></h1>
+      <p class="hero-sub">
+        GROK is a living demonstration of what happens when you treat Grok as a serious engineering partner — not a chat toy. Real automations. Real research. Real content systems. In minutes.
+      </p>
+      <div class="hero-cta">
+        <a href="https://github.com/ram133/GROK" class="btn btn-primary" target="_blank" rel="noopener">
+          View on GitHub →
+        </a>
+        <a href="#capabilities" class="btn btn-ghost">See what it does</a>
+      </div>
+      <div class="code-preview">
+        <div><span class="comment"># Instant value — no API keys required for core use</span></div>
+        <div><span class="cmd">grok</span> <span class="arg">"Research the biggest opportunities in personal AI agents for 2026"</span></div>
+        <div><span class="cmd">grok</span> <span class="arg">"Write a high-signal LinkedIn post about shipping with AI"</span></div>
+        <div><span class="cmd">grok</span> <span class="arg">"Create a 7-day plan to turn this into a paid product"</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CAPABILITIES -->
+  <section id="capabilities">
+    <div class="container">
+      <div class="section-label">What works today</div>
+      <h2>Useful from the first command</h2>
+      <p class="section-desc">No vaporware. Every capability below already produces structured, high-signal output you can actually use.</p>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-icon">🧠</div>
+          <h3>Natural Language Agent</h3>
+          <p>Structured, useful output from plain English. Clean architecture ready for real tools.</p>
+          <span class="status status-live">Live</span>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔍</div>
+          <h3>Research Agent</h3>
+          <p>High-signal briefs that cut through noise. Thesis-first, actionable, no fluff.</p>
+          <span class="status status-live">Live</span>
+        </div>
+        <div class="card">
+          <div class="card-icon">✍️</div>
+          <h3>Content Agent</h3>
+          <p>Posts, threads, emails, and copy that actually sound like a human who ships.</p>
+          <span class="status status-live">Live</span>
+        </div>
+        <div class="card">
+          <div class="card-icon">📋</div>
+          <h3>Planning Agent</h3>
+          <p>Realistic execution plans — timelines, dependencies, and next actions that make sense.</p>
+          <span class="status status-live">Live</span>
+        </div>
+        <div class="card">
+          <div class="card-icon">💻</div>
+          <h3>Beautiful CLI + Python API</h3>
+          <p><code style="font-family:var(--mono);font-size:0.85em">grok "task"</code> or <code style="font-family:var(--mono);font-size:0.85em">Agent().run(...)</code>. Local-first by design.</p>
+          <span class="status status-live">Live</span>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔌</div>
+          <h3>Extensible Tools Layer</h3>
+          <p>Ready for web, files, APIs, memory, and real-world actions. Thin orchestration, strong output.</p>
+          <span class="status status-live">Live</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTEGRATIONS -->
+  <section id="integrations">
+    <div class="container">
+      <div class="section-label">Platform power</div>
+      <h2>Leveraging every surface Grok touches</h2>
+      <p class="section-desc">This project exists to showcase what modern AI can do when it is wired into the platforms people actually use.</p>
+
+      <div class="integrations">
+        <div class="integration">
+          <div class="icon">𝕏</div>
+          <div class="name">X (Twitter)</div>
+          <div class="desc">Search · Threads · Signals</div>
+        </div>
+        <div class="integration">
+          <div class="icon">🐙</div>
+          <div class="name">GitHub</div>
+          <div class="desc">Repos · Issues · Code</div>
+        </div>
+        <div class="integration">
+          <div class="icon">📧</div>
+          <div class="name">Gmail</div>
+          <div class="desc">Draft · Read · Act</div>
+        </div>
+        <div class="integration">
+          <div class="icon">📅</div>
+          <div class="name">Calendar</div>
+          <div class="desc">Schedule · Context</div>
+        </div>
+        <div class="integration">
+          <div class="icon">📁</div>
+          <div class="name">Google Drive</div>
+          <div class="desc">Files · Knowledge</div>
+        </div>
+        <div class="integration">
+          <div class="icon">🌐</div>
+          <div class="name">Web + Browser</div>
+          <div class="desc">Research · Navigate</div>
+        </div>
+        <div class="integration">
+          <div class="icon">🗣️</div>
+          <div class="name">Voice</div>
+          <div class="desc">Speak · Listen</div>
+        </div>
+        <div class="integration">
+          <div class="icon">🖼️</div>
+          <div class="name">Image Gen</div>
+          <div class="desc">Create · Edit</div>
+        </div>
+        <div class="integration">
+          <div class="icon">⚙️</div>
+          <div class="name">Automations</div>
+          <div class="desc">Schedule · Recur</div>
+        </div>
+        <div class="integration">
+          <div class="icon">🛠️</div>
+          <div class="name">Code + Shell</div>
+          <div class="desc">Build · Execute</div>
+        </div>
+        <div class="integration">
+          <div class="icon">📊</div>
+          <div class="name">Sports + Weather</div>
+          <div class="desc">Live data</div>
+        </div>
+        <div class="integration">
+          <div class="icon">🧠</div>
+          <div class="name">Memory</div>
+          <div class="desc">Persistent context</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHILOSOPHY -->
+  <section class="philosophy">
+    <div class="container">
+      <p class="quote">
+        Most AI projects are demos.<br />
+        <span>GROK is built to become a product people actually use — and eventually pay for.</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section id="roadmap">
+    <div class="container">
+      <div class="section-label">Commercial path</div>
+      <h2>Open source → Pro</h2>
+      <p class="section-desc">The open-source version is the top of the funnel. Everything is designed to scale cleanly into a hosted product.</p>
+
+      <div class="roadmap">
+        <div class="phase active">
+          <h3>Now — Open Source</h3>
+          <ul>
+            <li>Free, useful, well-documented core</li>
+            <li>Local-first design</li>
+            <li>Beautiful CLI + Python API</li>
+            <li>Immediate utility on day one</li>
+          </ul>
+        </div>
+        <div class="phase">
+          <h3>Next</h3>
+          <ul>
+            <li>Persistent memory</li>
+            <li>Real tool calling (web, files, calendar, email)</li>
+            <li>Simple local web UI</li>
+            <li>Plugin system</li>
+          </ul>
+        </div>
+        <div class="phase">
+          <h3>Later — Revenue</h3>
+          <ul>
+            <li>Hosted version with auth</li>
+            <li>Team workspaces</li>
+            <li>Agent marketplace</li>
+            <li>Priority support / custom agents</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-cta">
+    <div class="container">
+      <h2>Watch a real product get built in public</h2>
+      <p>Actively developed with <strong>Grok</strong> (xAI) as primary collaborator.<br />This is not an official xAI project — it is a personal showcase of high-leverage collaboration with AI.</p>
+      <div class="hero-cta">
+        <a href="https://github.com/ram133/GROK" class="btn btn-primary" target="_blank" rel="noopener">Star the repo on GitHub</a>
+        <a href="https://github.com/ram133/GROK#quick-start" class="btn btn-ghost" target="_blank" rel="noopener">Quick start</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container inner">
+      <div>
+        <strong style="color:var(--text)">GROK</strong> · Personal AI Agent Toolkit<br />
+        Built by <a href="https://github.com/ram133">Clifford Ray Hackett</a> · Guam, USA · MIT License
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/ram133/GROK" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/ram133" target="_blank" rel="noopener">@ram133</a>
+        <a href="https://x.ai" target="_blank" rel="noopener">xAI / Grok</a>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
