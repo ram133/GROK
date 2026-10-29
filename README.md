@@ -6,10 +6,12 @@ Ship real automations, research, and content systems in minutes.
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
+[![Live Site](https://img.shields.io/badge/Live_Site-ram133.github.io%2FGROK-22d3ee)](https://ram133.github.io/GROK/)
 
 > A living demonstration of what happens when you treat AI as a serious engineering partner instead of a chat toy.
 
-**Live repo:** https://github.com/ram133/GROK
+**Live site:** https://ram133.github.io/GROK/  
+**Repo:** https://github.com/ram133/GROK
 
 ---
 
@@ -81,6 +83,20 @@ Design principles:
 - Strong structured output
 - Easy to extend with real tools (web, files, APIs, memory)
 - Local-first, cloud when it actually helps
+
+---
+
+## Platform Showcase
+
+GROK is deliberately built to highlight what Grok (xAI) can do when wired into real surfaces:
+
+- **X** — search, signals, threads
+- **GitHub** — repos, issues, code
+- **Gmail / Calendar / Drive** — real productivity surfaces
+- **Browser + Web** — research and navigation
+- **Voice, Image Gen, Automations, Code/Shell, Live data, Memory**
+
+The live site at [ram133.github.io/GROK](https://ram133.github.io/GROK/) demonstrates the vision.
 
 ---
 

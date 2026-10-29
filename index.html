@@ -6,6 +6,9 @@
   <title>GROK — Personal AI Agent Toolkit | Powered by Grok (xAI)</title>
   <meta name="description" content="Ship real automations, research, and content systems in minutes. A living showcase of what Grok can actually deliver when treated as a serious engineering partner." />
   <meta name="theme-color" content="#0a0a0b" />
+  <meta property="og:title" content="GROK — Personal AI Agent Toolkit" />
+  <meta property="og:description" content="Built with Grok. Real agents that ship work." />
+  <meta property="og:type" content="website" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -20,15 +23,13 @@
       --text-muted: #a1a1aa;
       --text-dim: #71717a;
       --accent: #22d3ee;
-      --accent-dim: #0891b2;
+      --accent-soft: rgba(34, 211, 238, 0.12);
       --purple: #a78bfa;
       --green: #34d399;
-      --orange: #fb923c;
-      --radius: 12px;
+      --radius: 14px;
       --font: 'Inter', system-ui, -apple-system, sans-serif;
       --mono: 'JetBrains Mono', ui-monospace, monospace;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
@@ -39,424 +40,286 @@
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
-
-    /* subtle grid background */
     body::before {
       content: '';
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background-image:
-        linear-gradient(rgba(34, 211, 238, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px);
-      background-size: 64px 64px;
-      pointer-events: none;
-      z-index: 0;
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(34,211,238,0.08), transparent),
+        linear-gradient(rgba(34,211,238,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(34,211,238,0.025) 1px, transparent 1px);
+      background-size: 100% 100%, 60px 60px, 60px 60px;
+      pointer-events: none; z-index: 0;
     }
-
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 1.5rem;
-      position: relative;
-      z-index: 1;
-    }
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 1.4rem; position: relative; z-index: 1; }
 
     /* NAV */
     nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      backdrop-filter: blur(16px);
-      background: rgba(10, 10, 11, 0.8);
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(18px);
+      background: rgba(10,10,11,0.82);
       border-bottom: 1px solid var(--border);
-      padding: 0.9rem 0;
+      padding: 0.85rem 0;
     }
-    nav .inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-    }
+    nav .inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
     .logo {
-      font-weight: 800;
-      font-size: 1.25rem;
-      letter-spacing: -0.03em;
-      color: var(--text);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      font-weight: 800; font-size: 1.2rem; letter-spacing: -0.03em;
+      color: var(--text); text-decoration: none;
+      display: flex; align-items: center; gap: 0.45rem;
     }
-    .logo span { color: var(--accent); }
-    .nav-links {
-      display: flex;
-      gap: 1.5rem;
-      align-items: center;
-    }
+    .logo .dot { color: var(--accent); }
+    .nav-links { display: flex; gap: 1.35rem; align-items: center; }
     .nav-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: color 0.15s;
+      color: var(--text-muted); text-decoration: none;
+      font-size: 0.9rem; font-weight: 500; transition: color 0.15s;
     }
     .nav-links a:hover { color: var(--text); }
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.55rem 1.1rem;
-      border-radius: 999px;
-      font-weight: 600;
-      font-size: 0.875rem;
-      text-decoration: none;
-      transition: all 0.15s;
-      border: 1px solid transparent;
-      cursor: pointer;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.55rem 1.15rem; border-radius: 999px;
+      font-weight: 600; font-size: 0.875rem;
+      text-decoration: none; transition: all 0.18s;
+      border: 1px solid transparent; cursor: pointer;
     }
-    .btn-primary {
-      background: var(--accent);
-      color: #0a0a0b;
-    }
-    .btn-primary:hover {
-      background: #67e8f9;
-      transform: translateY(-1px);
-    }
-    .btn-ghost {
-      background: transparent;
-      color: var(--text);
-      border-color: var(--border);
-    }
-    .btn-ghost:hover {
-      border-color: var(--border-hover);
-      background: var(--bg-elevated);
-    }
+    .btn-primary { background: var(--accent); color: #0a0a0b; }
+    .btn-primary:hover { background: #67e8f9; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(34,211,238,0.25); }
+    .btn-ghost { background: transparent; color: var(--text); border-color: var(--border); }
+    .btn-ghost:hover { border-color: var(--border-hover); background: var(--bg-elevated); }
 
     /* HERO */
-    .hero {
-      padding: 5rem 0 4rem;
-      text-align: center;
-    }
+    .hero { padding: 4.8rem 0 3.5rem; text-align: center; }
     .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      background: rgba(34, 211, 238, 0.08);
-      border: 1px solid rgba(34, 211, 238, 0.25);
-      color: var(--accent);
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 0.35rem 0.85rem;
-      border-radius: 999px;
-      margin-bottom: 1.5rem;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: var(--accent-soft); border: 1px solid rgba(34,211,238,0.28);
+      color: var(--accent); font-size: 0.78rem; font-weight: 600;
+      padding: 0.32rem 0.85rem; border-radius: 999px; margin-bottom: 1.4rem;
     }
     .badge::before {
-      content: '';
-      width: 6px;
-      height: 6px;
-      background: var(--accent);
-      border-radius: 50%;
-      animation: pulse 2s infinite;
+      content: ''; width: 6px; height: 6px; background: var(--accent);
+      border-radius: 50%; animation: pulse 2s infinite;
     }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
     h1 {
-      font-size: clamp(2.4rem, 6vw, 3.75rem);
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      line-height: 1.1;
-      margin-bottom: 1.25rem;
+      font-size: clamp(2.3rem, 5.8vw, 3.6rem);
+      font-weight: 800; letter-spacing: -0.04em; line-height: 1.08;
+      margin-bottom: 1.15rem;
     }
     h1 .gradient {
-      background: linear-gradient(135deg, #22d3ee 0%, #a78bfa 50%, #f472b6 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      background: linear-gradient(135deg, #22d3ee 0%, #a78bfa 55%, #f472b6 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
     .hero-sub {
-      font-size: 1.2rem;
-      color: var(--text-muted);
-      max-width: 620px;
-      margin: 0 auto 2.25rem;
-      line-height: 1.65;
+      font-size: 1.15rem; color: var(--text-muted);
+      max-width: 580px; margin: 0 auto 2rem; line-height: 1.65;
     }
-    .hero-cta {
-      display: flex;
-      gap: 0.85rem;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: 3rem;
+    .hero-cta { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2.75rem; }
+
+    /* INTERACTIVE DEMO */
+    .demo-box {
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      border-radius: var(--radius); max-width: 680px; margin: 0 auto;
+      overflow: hidden; text-align: left;
+      box-shadow: 0 20px 50px -20px rgba(0,0,0,0.6);
     }
-    .code-preview {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.25rem 1.5rem;
-      max-width: 640px;
-      margin: 0 auto;
-      text-align: left;
-      font-family: var(--mono);
-      font-size: 0.85rem;
-      overflow-x: auto;
+    .demo-header {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.7rem 1rem; border-bottom: 1px solid var(--border);
+      background: rgba(0,0,0,0.25);
     }
-    .code-preview .comment { color: var(--text-dim); }
-    .code-preview .cmd { color: var(--accent); }
-    .code-preview .arg { color: var(--purple); }
+    .demo-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .demo-dot.r { background: #ff5f57; }
+    .demo-dot.y { background: #febc2e; }
+    .demo-dot.g { background: #28c840; }
+    .demo-title { font-size: 0.75rem; color: var(--text-dim); margin-left: 0.5rem; font-family: var(--mono); }
+    .demo-body { padding: 1.1rem 1.2rem; font-family: var(--mono); font-size: 0.82rem; }
+    .demo-line { margin-bottom: 0.55rem; }
+    .demo-prompt { color: var(--accent); }
+    .demo-input {
+      width: 100%; background: transparent; border: none; outline: none;
+      color: var(--text); font-family: var(--mono); font-size: 0.82rem;
+      padding: 0.2rem 0;
+    }
+    .demo-output {
+      margin-top: 0.9rem; padding-top: 0.9rem; border-top: 1px solid var(--border);
+      color: var(--text-muted); white-space: pre-wrap; line-height: 1.5;
+      min-height: 4.5rem; font-size: 0.8rem;
+    }
+    .demo-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
+    .chip {
+      font-size: 0.72rem; padding: 0.28rem 0.7rem; border-radius: 999px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      color: var(--text-muted); cursor: pointer; transition: all 0.15s;
+      font-family: var(--font);
+    }
+    .chip:hover { border-color: var(--accent); color: var(--accent); }
 
     /* SECTIONS */
-    section {
-      padding: 4.5rem 0;
-    }
+    section { padding: 4.2rem 0; }
     .section-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 0.75rem;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.09em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 0.65rem;
     }
     h2 {
-      font-size: clamp(1.75rem, 4vw, 2.25rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin-bottom: 1rem;
+      font-size: clamp(1.7rem, 3.8vw, 2.15rem);
+      font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.85rem;
     }
-    .section-desc {
-      color: var(--text-muted);
-      font-size: 1.05rem;
-      max-width: 560px;
-      margin-bottom: 2.5rem;
-    }
+    .section-desc { color: var(--text-muted); font-size: 1.02rem; max-width: 540px; margin-bottom: 2.3rem; }
 
-    /* CAPABILITIES GRID */
+    /* CARDS */
     .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.25rem;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 1.15rem;
     }
     .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.5rem;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.4rem;
       transition: border-color 0.2s, transform 0.2s;
     }
-    .card:hover {
-      border-color: var(--border-hover);
-      transform: translateY(-2px);
-    }
+    .card:hover { border-color: var(--border-hover); transform: translateY(-3px); }
     .card-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.25rem;
-      margin-bottom: 1rem;
-      background: rgba(34, 211, 238, 0.1);
+      width: 38px; height: 38px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; margin-bottom: 0.9rem;
+      background: var(--accent-soft);
     }
-    .card h3 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 0.4rem;
-    }
-    .card p {
-      color: var(--text-muted);
-      font-size: 0.925rem;
-    }
+    .card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.35rem; }
+    .card p { color: var(--text-muted); font-size: 0.9rem; }
     .status {
-      display: inline-block;
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 0.15rem 0.5rem;
-      border-radius: 999px;
-      margin-top: 0.75rem;
+      display: inline-block; font-size: 0.68rem; font-weight: 700;
+      padding: 0.14rem 0.5rem; border-radius: 999px; margin-top: 0.7rem;
     }
-    .status-live {
-      background: rgba(52, 211, 153, 0.15);
-      color: var(--green);
-    }
+    .status-live { background: rgba(52,211,153,0.14); color: var(--green); }
 
     /* INTEGRATIONS */
     .integrations {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 0.85rem;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.8rem;
     }
     .integration {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.1rem 0.9rem;
-      text-align: center;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1rem 0.8rem; text-align: center;
       transition: all 0.2s;
     }
-    .integration:hover {
-      border-color: var(--accent);
-      background: rgba(34, 211, 238, 0.05);
-    }
-    .integration .icon {
-      font-size: 1.6rem;
-      margin-bottom: 0.4rem;
-    }
-    .integration .name {
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-    .integration .desc {
-      font-size: 0.7rem;
-      color: var(--text-dim);
-      margin-top: 0.2rem;
-    }
+    .integration:hover { border-color: var(--accent); background: var(--accent-soft); }
+    .integration .icon { font-size: 1.5rem; margin-bottom: 0.35rem; }
+    .integration .name { font-size: 0.82rem; font-weight: 600; }
+    .integration .desc { font-size: 0.68rem; color: var(--text-dim); margin-top: 0.15rem; }
 
-    /* SHOWCASE / PHILOSOPHY */
+    /* PHILOSOPHY */
     .philosophy {
-      background: linear-gradient(180deg, transparent, rgba(34, 211, 238, 0.04), transparent);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, transparent, rgba(34,211,238,0.035), transparent);
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
     }
     .quote {
-      font-size: 1.35rem;
-      font-weight: 500;
-      max-width: 720px;
-      margin: 0 auto;
-      text-align: center;
-      line-height: 1.55;
-      color: var(--text);
+      font-size: 1.3rem; font-weight: 500; max-width: 700px;
+      margin: 0 auto; text-align: center; line-height: 1.55;
     }
-    .quote span { color: var(--accent); }
+    .quote em { color: var(--accent); font-style: normal; }
 
     /* ROADMAP */
     .roadmap {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.5rem;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.4rem;
     }
     .phase {
-      position: relative;
-      padding-left: 1.5rem;
+      position: relative; padding-left: 1.4rem;
       border-left: 2px solid var(--border);
     }
     .phase.active { border-left-color: var(--accent); }
     .phase h3 {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      font-size: 0.98rem; font-weight: 700; margin-bottom: 0.45rem;
+      display: flex; align-items: center; gap: 0.45rem;
     }
-    .phase ul {
-      list-style: none;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-    .phase li {
-      margin-bottom: 0.35rem;
-      padding-left: 1rem;
-      position: relative;
-    }
-    .phase li::before {
-      content: '→';
-      position: absolute;
-      left: 0;
-      color: var(--text-dim);
-    }
+    .phase ul { list-style: none; color: var(--text-muted); font-size: 0.88rem; }
+    .phase li { margin-bottom: 0.3rem; padding-left: 0.95rem; position: relative; }
+    .phase li::before { content: '→'; position: absolute; left: 0; color: var(--text-dim); }
 
-    /* CTA */
-    .final-cta {
-      text-align: center;
-      padding: 5rem 0;
-    }
-    .final-cta h2 {
-      margin-bottom: 0.75rem;
-    }
-    .final-cta p {
-      color: var(--text-muted);
-      margin-bottom: 2rem;
-      font-size: 1.1rem;
-    }
+    /* FINAL CTA */
+    .final-cta { text-align: center; padding: 4.8rem 0; }
+    .final-cta h2 { margin-bottom: 0.7rem; }
+    .final-cta p { color: var(--text-muted); margin-bottom: 1.8rem; font-size: 1.05rem; }
 
     /* FOOTER */
     footer {
-      border-top: 1px solid var(--border);
-      padding: 2.5rem 0;
-      color: var(--text-dim);
-      font-size: 0.875rem;
+      border-top: 1px solid var(--border); padding: 2.2rem 0;
+      color: var(--text-dim); font-size: 0.85rem;
     }
     footer .inner {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 1.5rem;
-      align-items: center;
+      display: flex; flex-wrap: wrap; justify-content: space-between;
+      gap: 1.3rem; align-items: center;
     }
-    footer a {
-      color: var(--text-muted);
-      text-decoration: none;
-    }
+    footer a { color: var(--text-muted); text-decoration: none; }
     footer a:hover { color: var(--accent); }
-    .footer-links {
-      display: flex;
-      gap: 1.25rem;
-    }
+    .footer-links { display: flex; gap: 1.2rem; }
 
-    /* RESPONSIVE */
-    @media (max-width: 640px) {
+    /* MOBILE */
+    .menu-btn {
+      display: none; background: none; border: none; color: var(--text);
+      font-size: 1.4rem; cursor: pointer; padding: 0.2rem;
+    }
+    @media (max-width: 720px) {
       .nav-links a:not(.btn) { display: none; }
-      .hero { padding: 3.5rem 0 3rem; }
-      .code-preview { font-size: 0.75rem; }
+      .menu-btn { display: block; }
+      .nav-links.open { 
+        display: flex; flex-direction: column; position: absolute;
+        top: 100%; left: 0; right: 0; background: var(--bg-elevated);
+        border-bottom: 1px solid var(--border); padding: 1rem;
+        gap: 0.8rem;
+      }
+      .nav-links.open a { display: block; }
+      .hero { padding: 3.2rem 0 2.5rem; }
+      .demo-body { font-size: 0.75rem; }
     }
   </style>
 </head>
 <body>
-  <!-- NAV -->
   <nav>
     <div class="container inner">
-      <a href="#" class="logo">GROK <span>·</span> powered by Grok</a>
-      <div class="nav-links">
+      <a href="#" class="logo">GROK <span class="dot">·</span> powered by Grok</a>
+      <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+      <div class="nav-links" id="navLinks">
         <a href="#capabilities">Capabilities</a>
         <a href="#integrations">Integrations</a>
         <a href="#roadmap">Roadmap</a>
         <a href="https://github.com/ram133/GROK" class="btn btn-ghost" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://github.com/ram133/GROK" class="btn btn-primary" target="_blank" rel="noopener">Star the repo</a>
+        <a href="https://github.com/ram133/GROK" class="btn btn-primary" target="_blank" rel="noopener">Star</a>
       </div>
     </div>
   </nav>
 
-  <!-- HERO -->
   <header class="hero">
     <div class="container">
       <div class="badge">v0.1.1 · Live & shipping</div>
       <h1>Personal AI agents that<br /><span class="gradient">actually ship work</span></h1>
       <p class="hero-sub">
-        GROK is a living demonstration of what happens when you treat Grok as a serious engineering partner — not a chat toy. Real automations. Real research. Real content systems. In minutes.
+        GROK is a living demonstration of treating Grok as a serious engineering partner — not a chat toy. Real automations. Real research. Real content systems. In minutes.
       </p>
       <div class="hero-cta">
-        <a href="https://github.com/ram133/GROK" class="btn btn-primary" target="_blank" rel="noopener">
-          View on GitHub →
-        </a>
-        <a href="#capabilities" class="btn btn-ghost">See what it does</a>
+        <a href="https://github.com/ram133/GROK" class="btn btn-primary" target="_blank" rel="noopener">View on GitHub →</a>
+        <a href="#demo" class="btn btn-ghost">Try the feel</a>
       </div>
-      <div class="code-preview">
-        <div><span class="comment"># Instant value — no API keys required for core use</span></div>
-        <div><span class="cmd">grok</span> <span class="arg">"Research the biggest opportunities in personal AI agents for 2026"</span></div>
-        <div><span class="cmd">grok</span> <span class="arg">"Write a high-signal LinkedIn post about shipping with AI"</span></div>
-        <div><span class="cmd">grok</span> <span class="arg">"Create a 7-day plan to turn this into a paid product"</span></div>
+
+      <!-- INTERACTIVE DEMO -->
+      <div class="demo-box" id="demo">
+        <div class="demo-header">
+          <div class="demo-dot r"></div><div class="demo-dot y"></div><div class="demo-dot g"></div>
+          <span class="demo-title">grok · terminal</span>
+        </div>
+        <div class="demo-body">
+          <div class="demo-line"><span class="demo-prompt">$</span> <span style="color:var(--purple)">grok</span></div>
+          <input type="text" class="demo-input" id="demoInput" placeholder='"Research personal AI agent opportunities for 2026"' autocomplete="off" />
+          <div class="demo-actions">
+            <button class="chip" data-q="Research the biggest opportunities in personal AI agents for 2026">Research</button>
+            <button class="chip" data-q="Write a high-signal LinkedIn post about shipping with AI">Content</button>
+            <button class="chip" data-q="Create a 7-day plan to turn an open-source tool into a paid product">Plan</button>
+          </div>
+          <div class="demo-output" id="demoOutput">Type a task or click a chip above. This is a local simulation of the structured output style GROK produces.</div>
+        </div>
       </div>
     </div>
   </header>
 
-  <!-- CAPABILITIES -->
   <section id="capabilities">
     <div class="container">
       <div class="section-label">What works today</div>
       <h2>Useful from the first command</h2>
       <p class="section-desc">No vaporware. Every capability below already produces structured, high-signal output you can actually use.</p>
-
       <div class="grid-3">
         <div class="card">
           <div class="card-icon">🧠</div>
@@ -485,108 +348,55 @@
         <div class="card">
           <div class="card-icon">💻</div>
           <h3>Beautiful CLI + Python API</h3>
-          <p><code style="font-family:var(--mono);font-size:0.85em">grok "task"</code> or <code style="font-family:var(--mono);font-size:0.85em">Agent().run(...)</code>. Local-first by design.</p>
+          <p><code style="font-family:var(--mono);font-size:0.82em">grok "task"</code> or <code style="font-family:var(--mono);font-size:0.82em">Agent().run(...)</code>. Local-first.</p>
           <span class="status status-live">Live</span>
         </div>
         <div class="card">
           <div class="card-icon">🔌</div>
           <h3>Extensible Tools Layer</h3>
-          <p>Ready for web, files, APIs, memory, and real-world actions. Thin orchestration, strong output.</p>
+          <p>Ready for web, files, APIs, memory, and real-world actions. Thin orchestration.</p>
           <span class="status status-live">Live</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- INTEGRATIONS -->
   <section id="integrations">
     <div class="container">
       <div class="section-label">Platform power</div>
       <h2>Leveraging every surface Grok touches</h2>
       <p class="section-desc">This project exists to showcase what modern AI can do when it is wired into the platforms people actually use.</p>
-
       <div class="integrations">
-        <div class="integration">
-          <div class="icon">𝕏</div>
-          <div class="name">X (Twitter)</div>
-          <div class="desc">Search · Threads · Signals</div>
-        </div>
-        <div class="integration">
-          <div class="icon">🐙</div>
-          <div class="name">GitHub</div>
-          <div class="desc">Repos · Issues · Code</div>
-        </div>
-        <div class="integration">
-          <div class="icon">📧</div>
-          <div class="name">Gmail</div>
-          <div class="desc">Draft · Read · Act</div>
-        </div>
-        <div class="integration">
-          <div class="icon">📅</div>
-          <div class="name">Calendar</div>
-          <div class="desc">Schedule · Context</div>
-        </div>
-        <div class="integration">
-          <div class="icon">📁</div>
-          <div class="name">Google Drive</div>
-          <div class="desc">Files · Knowledge</div>
-        </div>
-        <div class="integration">
-          <div class="icon">🌐</div>
-          <div class="name">Web + Browser</div>
-          <div class="desc">Research · Navigate</div>
-        </div>
-        <div class="integration">
-          <div class="icon">🗣️</div>
-          <div class="name">Voice</div>
-          <div class="desc">Speak · Listen</div>
-        </div>
-        <div class="integration">
-          <div class="icon">🖼️</div>
-          <div class="name">Image Gen</div>
-          <div class="desc">Create · Edit</div>
-        </div>
-        <div class="integration">
-          <div class="icon">⚙️</div>
-          <div class="name">Automations</div>
-          <div class="desc">Schedule · Recur</div>
-        </div>
-        <div class="integration">
-          <div class="icon">🛠️</div>
-          <div class="name">Code + Shell</div>
-          <div class="desc">Build · Execute</div>
-        </div>
-        <div class="integration">
-          <div class="icon">📊</div>
-          <div class="name">Sports + Weather</div>
-          <div class="desc">Live data</div>
-        </div>
-        <div class="integration">
-          <div class="icon">🧠</div>
-          <div class="name">Memory</div>
-          <div class="desc">Persistent context</div>
-        </div>
+        <div class="integration"><div class="icon">𝕏</div><div class="name">X</div><div class="desc">Search · Threads</div></div>
+        <div class="integration"><div class="icon">🐙</div><div class="name">GitHub</div><div class="desc">Repos · Issues · Code</div></div>
+        <div class="integration"><div class="icon">📧</div><div class="name">Gmail</div><div class="desc">Draft · Read · Act</div></div>
+        <div class="integration"><div class="icon">📅</div><div class="name">Calendar</div><div class="desc">Schedule · Context</div></div>
+        <div class="integration"><div class="icon">📁</div><div class="name">Drive</div><div class="desc">Files · Knowledge</div></div>
+        <div class="integration"><div class="icon">🌐</div><div class="name">Web + Browser</div><div class="desc">Research · Navigate</div></div>
+        <div class="integration"><div class="icon">🗣️</div><div class="name">Voice</div><div class="desc">Speak · Listen</div></div>
+        <div class="integration"><div class="icon">🖼️</div><div class="name">Image Gen</div><div class="desc">Create · Edit</div></div>
+        <div class="integration"><div class="icon">⚙️</div><div class="name">Automations</div><div class="desc">Schedule · Recur</div></div>
+        <div class="integration"><div class="icon">🛠️</div><div class="name">Code + Shell</div><div class="desc">Build · Execute</div></div>
+        <div class="integration"><div class="icon">📊</div><div class="name">Live Data</div><div class="desc">Sports · Weather</div></div>
+        <div class="integration"><div class="icon">🧠</div><div class="name">Memory</div><div class="desc">Persistent context</div></div>
       </div>
     </div>
   </section>
 
-  <!-- PHILOSOPHY -->
   <section class="philosophy">
     <div class="container">
       <p class="quote">
         Most AI projects are demos.<br />
-        <span>GROK is built to become a product people actually use — and eventually pay for.</span>
+        <em>GROK is built to become a product people actually use — and eventually pay for.</em>
       </p>
     </div>
   </section>
 
-  <!-- ROADMAP -->
   <section id="roadmap">
     <div class="container">
       <div class="section-label">Commercial path</div>
       <h2>Open source → Pro</h2>
       <p class="section-desc">The open-source version is the top of the funnel. Everything is designed to scale cleanly into a hosted product.</p>
-
       <div class="roadmap">
         <div class="phase active">
           <h3>Now — Open Source</h3>
@@ -619,7 +429,6 @@
     </div>
   </section>
 
-  <!-- FINAL CTA -->
   <section class="final-cta">
     <div class="container">
       <h2>Watch a real product get built in public</h2>
@@ -631,12 +440,11 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer>
     <div class="container inner">
       <div>
         <strong style="color:var(--text)">GROK</strong> · Personal AI Agent Toolkit<br />
-        Built by <a href="https://github.com/ram133">Clifford Ray Hackett</a> · Guam, USA · MIT License
+        Built by <a href="https://github.com/ram133">Clifford Ray Hackett</a> · Guam, USA · MIT
       </div>
       <div class="footer-links">
         <a href="https://github.com/ram133/GROK" target="_blank" rel="noopener">GitHub</a>
@@ -645,5 +453,40 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    // Mobile menu
+    const menuBtn = document.getElementById('menuBtn');
+    const navLinks = document.getElementById('navLinks');
+    menuBtn.addEventListener('click', () => navLinks.classList.toggle('open'));
+
+    // Interactive demo (local simulation of style)
+    const input = document.getElementById('demoInput');
+    const output = document.getElementById('demoOutput');
+    const samples = {
+      research: `## Research Brief\n\n**Query**  \nResearch the biggest opportunities in personal AI agents for 2026\n\n### Core Thesis\nPersonal AI agents are shifting from novelty chat interfaces to persistent systems that own recurring outcomes.\n\n### Highest-leverage opportunities\n1. **Outcome ownership** — agents that ship weekly deliverables, not just answer questions\n2. **Tool-native agents** — deep integration with email, calendar, code, and files\n3. **Local-first + selective cloud** — privacy + power without forced lock-in\n4. **Agent marketplaces** — specialized agents that users can install and pay for\n\n### Next action\nPrototype one narrow outcome-owning agent and measure real usage.`,
+      content: `## High-Signal LinkedIn Post\n\nMost people still treat AI like a search box with better manners.\n\nThe real unlock is treating it like a junior partner who can own outcomes.\n\nI've been shipping a personal agent toolkit (GROK) that turns natural language into structured research, content, and execution plans — in minutes.\n\nNo vaporware. Local-first. Extensible.\n\nThe gap between "demo" and "daily driver" is closing fast.\n\nIf you're still only chatting, you're leaving leverage on the table.\n\n#AI #BuildInPublic #Agents`,
+      plan: `## 7-Day Launch Plan\n\n**Goal**: Turn the open-source core into a clear path toward a paid product.\n\n**Day 1–2**  \nPolish README + live site. Record 60-second demo video.\n\n**Day 3**  \nAdd one real tool (web search or file write). Ship it.\n\n**Day 4**  \nWrite 3 sharp posts showing before/after agent output.\n\n**Day 5**  \nCollect 10 pieces of feedback from real users.\n\n**Day 6**  \nDefine the Pro tier (memory + hosted tools).\n\n**Day 7**  \nPublish roadmap publicly and open a waitlist.\n\nShip daily. Measure signals, not vanity.`
+    };
+
+    function runDemo(q) {
+      input.value = q;
+      output.textContent = 'Running…';
+      setTimeout(() => {
+        const key = q.toLowerCase().includes('research') ? 'research'
+                  : q.toLowerCase().includes('linkedin') || q.toLowerCase().includes('post') ? 'content'
+                  : 'plan';
+        output.textContent = samples[key] || samples.research;
+      }, 420);
+    }
+
+    document.querySelectorAll('.chip').forEach(btn => {
+      btn.addEventListener('click', () => runDemo(btn.dataset.q));
+    });
+
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && input.value.trim()) runDemo(input.value.trim());
+    });
+  </script>
 </body>
 </html>
