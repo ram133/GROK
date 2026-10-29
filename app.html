@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>GROK — Agent</title>
+  <meta name="theme-color" content="#0a0a0b" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0b;
+      --bg-elevated: #111113;
+      --bg-card: #161618;
+      --border: #27272a;
+      --text: #fafafa;
+      --text-muted: #a1a1aa;
+      --text-dim: #71717a;
+      --accent: #22d3ee;
+      --accent-soft: rgba(34, 211, 238, 0.12);
+      --purple: #a78bfa;
+      --green: #34d399;
+      --radius: 16px;
+      --font: 'Inter', system-ui, -apple-system, sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, monospace;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Header */
+    header {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1.1rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10,10,11,0.92);
+      backdrop-filter: blur(12px);
+      z-index: 10;
+    }
+    .logo {
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.03em;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .logo span { color: var(--accent); }
+    .header-actions { display: flex; gap: 0.5rem; align-items: center; }
+    .icon-btn {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .icon-btn:hover { background: var(--bg-elevated); color: var(--text); }
+
+    /* Main chat area */
+    main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.2rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .message {
+      max-width: 920px;
+      width: 100%;
+      margin: 0 auto;
+      animation: fadeIn 0.25s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg-user {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .msg-user .bubble {
+      background: var(--accent);
+      color: #0a0a0b;
+      padding: 0.7rem 1rem;
+      border-radius: 18px 18px 4px 18px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      max-width: 85%;
+    }
+
+    .msg-agent .bubble {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px 18px 18px 18px;
+      padding: 1rem 1.15rem;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      white-space: pre-wrap;
+      line-height: 1.55;
+      font-family: var(--mono);
+    }
+    .msg-agent .label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.45rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-family: var(--font);
+    }
+
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--text-dim);
+    }
+    .empty-state h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+    .empty-state p {
+      font-size: 0.95rem;
+      max-width: 320px;
+      margin-bottom: 1.8rem;
+      line-height: 1.5;
+    }
+    .suggestions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      width: 100%;
+      max-width: 360px;
+    }
+    .suggestion {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 0.85rem 1rem;
+      text-align: left;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: var(--font);
+    }
+    .suggestion:hover, .suggestion:active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--text);
+    }
+
+    /* Input area */
+    .input-area {
+      flex-shrink: 0;
+      padding: 0.85rem 1rem calc(0.85rem + var(--safe-bottom));
+      border-top: 1px solid var(--border);
+      background: rgba(10,10,11,0.95);
+      backdrop-filter: blur(12px);
+    }
+    .input-wrap {
+      max-width: 920px;
+      margin: 0 auto;
+      display: flex;
+      gap: 0.6rem;
+      align-items: flex-end;
+    }
+    textarea {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 0.85rem 1.1rem;
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 0.95rem;
+      resize: none;
+      max-height: 140px;
+      min-height: 48px;
+      line-height: 1.4;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    textarea:focus { border-color: var(--accent); }
+    textarea::placeholder { color: var(--text-dim); }
+    .send-btn {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #0a0a0b;
+      border: none;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 0.15s, background 0.15s;
+    }
+    .send-btn:hover { background: #67e8f9; transform: scale(1.05); }
+    .send-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .typing {
+      display: flex;
+      gap: 4px;
+      padding: 0.4rem 0;
+    }
+    .typing span {
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
+    }
+    .typing span:nth-child(2) { animation-delay: 0.15s; }
+    .typing span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-4px); opacity: 1; }
+    }
+
+    @media (min-width: 640px) {
+      main { padding: 1.5rem; }
+      .input-area { padding: 1rem 1.5rem calc(1rem + var(--safe-bottom)); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="./" class="logo">GROK <span>·</span> Agent</a>
+    <div class="header-actions">
+      <a href="./" class="icon-btn" title="Home">⌂</a>
+      <a href="https://github.com/ram133/GROK" class="icon-btn" target="_blank" rel="noopener" title="GitHub">⌥</a>
+    </div>
+  </header>
+
+  <main id="chat">
+    <div class="empty-state" id="empty">
+      <h2>What do you want to ship?</h2>
+      <p>Type a task or pick one of the starters below. GROK returns structured, high-signal work product.</p>
+      <div class="suggestions">
+        <button class="suggestion" data-q="Research the biggest opportunities in personal AI agents for 2026">Research personal AI agent opportunities for 2026</button>
+        <button class="suggestion" data-q="Write a high-signal LinkedIn post about shipping with AI">Write a high-signal LinkedIn post</button>
+        <button class="suggestion" data-q="Create a 7-day plan to turn an open-source tool into a paid product">Create a 7-day launch plan</button>
+        <button class="suggestion" data-q="Give me a sharp one-page brief on local vs cloud AI agents">Local vs cloud AI agents brief</button>
+      </div>
+    </div>
+  </main>
+
+  <div class="input-area">
+    <div class="input-wrap">
+      <textarea id="input" rows="1" placeholder="Ask GROK to research, write, or plan…" enterkeyhint="send"></textarea>
+      <button class="send-btn" id="send" disabled title="Send">↑</button>
+    </div>
+  </div>
+
+  <script>
+    const chat = document.getElementById('chat');
+    const empty = document.getElementById('empty');
+    const input = document.getElementById('input');
+    const sendBtn = document.getElementById('send');
+
+    // Auto-resize textarea
+    input.addEventListener('input', () => {
+      input.style.height = 'auto';
+      input.style.height = Math.min(input.scrollHeight, 140) + 'px';
+      sendBtn.disabled = !input.value.trim();
+    });
+
+    // Sample high-signal responses (same style as the core agent)
+    const samples = {
+      research: `## Research Brief\n\n**Query**  \nResearch the biggest opportunities in personal AI agents for 2026\n\n### Core Thesis\nPersonal AI agents are shifting from novelty chat interfaces to persistent systems that own recurring outcomes.\n\n### Highest-leverage opportunities\n1. **Outcome ownership** — agents that ship weekly deliverables, not just answer questions\n2. **Tool-native agents** — deep integration with email, calendar, code, and files\n3. **Local-first + selective cloud** — privacy + power without forced lock-in\n4. **Agent marketplaces** — specialized agents users can install and pay for\n\n### Next action\nPrototype one narrow outcome-owning agent and measure real usage.`,
+
+      content: `## High-Signal LinkedIn Post\n\nMost people still treat AI like a search box with better manners.\n\nThe real unlock is treating it like a junior partner who can own outcomes.\n\nI've been shipping a personal agent toolkit (GROK) that turns natural language into structured research, content, and execution plans — in minutes.\n\nNo vaporware. Local-first. Extensible.\n\nThe gap between "demo" and "daily driver" is closing fast.\n\nIf you're still only chatting, you're leaving leverage on the table.\n\n#AI #BuildInPublic #Agents`,
+
+      plan: `## 7-Day Launch Plan\n\n**Goal**: Turn the open-source core into a clear path toward a paid product.\n\n**Day 1–2**  \nPolish README + live site. Record 60-second demo video.\n\n**Day 3**  \nAdd one real tool (web search or file write). Ship it.\n\n**Day 4**  \nWrite 3 sharp posts showing before/after agent output.\n\n**Day 5**  \nCollect 10 pieces of feedback from real users.\n\n**Day 6**  \nDefine the Pro tier (memory + hosted tools).\n\n**Day 7**  \nPublish roadmap publicly and open a waitlist.\n\nShip daily. Measure signals, not vanity.`,
+
+      brief: `## One-Page Brief: Local vs Cloud AI Agents\n\n### Local-first\n- Data stays on device\n- Works offline\n- Lower latency for simple tasks\n- Limited by local compute\n- Best for privacy-sensitive or always-available tools\n\n### Cloud\n- Access to frontier models\n- Scales with demand\n- Easy multi-device sync\n- Requires connectivity + trust\n- Best for heavy reasoning and large context\n\n### Practical recommendation\nUse a hybrid: local agent for routine + privacy, cloud for hard reasoning and tool calling when needed. This is the architecture GROK is designed around.`
+    };
+
+    function pickResponse(q) {
+      const t = q.toLowerCase();
+      if (t.includes('research') || t.includes('opportunit')) return samples.research;
+      if (t.includes('linkedin') || t.includes('post') || t.includes('content')) return samples.content;
+      if (t.includes('plan') || t.includes('7-day') || t.includes('launch')) return samples.plan;
+      if (t.includes('local') || t.includes('cloud') || t.includes('brief')) return samples.brief;
+      // default high-signal fallback
+      return `## Structured Response\n\n**Task**  \n${q}\n\n### Summary\nThis is a high-signal, structured output in the same style the GROK agent produces.\n\n### Key points\n- Clear thesis first\n- Actionable next steps\n- No fluff\n\n### Next action\nDefine the concrete outcome you want this agent to own, then iterate.`;
+    }
+
+    function addMessage(role, text) {
+      empty.style.display = 'none';
+      const div = document.createElement('div');
+      div.className = `message msg-${role}`;
+
+      if (role === 'user') {
+        div.innerHTML = `<div class="bubble">${escapeHtml(text)}</div>`;
+      } else {
+        div.innerHTML = `<div class="label">GROK</div><div class="bubble">${escapeHtml(text)}</div>`;
+      }
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function showTyping() {
+      const div = document.createElement('div');
+      div.className = 'message msg-agent';
+      div.id = 'typing';
+      div.innerHTML = `<div class="label">GROK</div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function removeTyping() {
+      const t = document.getElementById('typing');
+      if (t) t.remove();
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    async function run(q) {
+      if (!q.trim()) return;
+      addMessage('user', q);
+      input.value = '';
+      input.style.height = 'auto';
+      sendBtn.disabled = true;
+
+      showTyping();
+      await new Promise(r => setTimeout(r, 500 + Math.random() * 400));
+      removeTyping();
+
+      const response = pickResponse(q);
+      addMessage('agent', response);
+    }
+
+    sendBtn.addEventListener('click', () => run(input.value));
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        run(input.value);
+      }
+    });
+
+    document.querySelectorAll('.suggestion').forEach(btn => {
+      btn.addEventListener('click', () => run(btn.dataset.q));
+    });
+
+    // Focus input on load (desktop)
+    if (window.innerWidth > 640) input.focus();
+  </script>
+</body>
+</html>
