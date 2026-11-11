@@ -121,6 +121,20 @@ The open-source version is the top of the funnel.
 
 ---
 
+## Contact & Support
+
+| Method | Details |
+|--------|---------|
+| **Phone / Signal** | +1 (671) 685-9138 · +1 (671) 456-6963 |
+| **Email** | 3659745@gmail.com · crh2123@icloud.com |
+| **Website** | [ray.services](https://ray.services) |
+| **PayPal** | crh2123@icloud.com |
+| **Custom agents / consulting** | $1/min live sessions |
+
+All payments go directly to Ray.
+
+---
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).  
