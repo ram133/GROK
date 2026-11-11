@@ -11,7 +11,10 @@ Ship real automations, research, and content systems in minutes.
 > A living demonstration of what happens when you treat AI as a serious engineering partner instead of a chat toy.
 
 **Live site:** https://ram133.github.io/GROK/  
-**Repo:** https://github.com/ram133/GROK
+**Repo:** https://github.com/ram133/GROK  
+**Free resources:** [start-here](https://github.com/ram133/start-here)
+
+This is the same toolkit style I use when building agents and automation systems with clients.
 
 ---
 
@@ -67,57 +70,13 @@ print(result.output)
 
 ---
 
-## Architecture
-
-```
-grok/
-├── agents/           # Specialized agents (research, content, planning...)
-├── core/             # Runner, result model, tools interface
-├── cli/              # Typer + Rich CLI
-├── examples/         # Ready-to-run demos
-└── docs/             # Clear documentation
-```
-
-Design principles:
-- Thin orchestration
-- Strong structured output
-- Easy to extend with real tools (web, files, APIs, memory)
-- Local-first, cloud when it actually helps
-
----
-
-## Platform Showcase
-
-GROK is deliberately built to highlight what Grok (xAI) can do when wired into real surfaces:
-
-- **X** — search, signals, threads
-- **GitHub** — repos, issues, code
-- **Gmail / Calendar / Drive** — real productivity surfaces
-- **Browser + Web** — research and navigation
-- **Voice, Image Gen, Automations, Code/Shell, Live data, Memory**
-
-The live site at [ram133.github.io/GROK](https://ram133.github.io/GROK/) demonstrates the vision.
-
----
-
-## Commercial Roadmap
+## Commercial Path
 
 **Now (Open Source)**  
 Free, useful, well-documented core.
 
-**Next**  
-- Persistent memory  
-- Real tool calling (web, files, calendar, email)  
-- Simple local web UI  
-- Plugin system  
-
-**Later (Revenue)**  
-- Hosted version with authentication  
-- Team workspaces  
-- Agent marketplace  
-- Priority support / custom agents  
-
-The open-source version is the top of the funnel.
+**Want it customized or extended live?**  
+→ [services](https://github.com/ram133/services) — $1 per minute
 
 ---
 
@@ -135,24 +94,9 @@ All payments go directly to Ray.
 
 ---
 
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md).  
-Ideas, bug reports, and especially real use-cases are highly valued.
-
----
-
 ## Credits
 
 Actively developed with **Grok** (xAI) as primary collaborator.  
 This is **not** an official xAI project — it is a personal showcase of high-leverage collaboration with AI.
-
----
-
-## License
-
-MIT
-
----
 
 **Star the repo** if you want to watch (and help) a real product get built in public.
