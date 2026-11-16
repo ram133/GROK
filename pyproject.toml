@@ -4,15 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "grok-agent"
-version = "0.1.0"
-description = "Personal AI Agent Toolkit — ship real automations fast"
+version = "0.1.2"
+description = "Personal AI Agent Toolkit — ship real automations fast. Free-first."
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [
     {name = "Clifford Ray Hackett", email = "3659745@gmail.com"}
 ]
-keywords = ["ai", "agents", "automation", "llm", "personal-ai"]
+keywords = ["ai", "agents", "automation", "llm", "personal-ai", "free"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -33,3 +33,4 @@ grok = "grok.cli.main:app"
 [project.urls]
 Homepage = "https://github.com/ram133/GROK"
 Repository = "https://github.com/ram133/GROK"
+"Free AI Resources" = "https://github.com/ram133/GROK/blob/main/docs/free-ai-resources.md"
