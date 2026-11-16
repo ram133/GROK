@@ -1,6 +1,6 @@
 """GROK — Personal AI Agent Toolkit"""
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 
 from .core.agent import Agent, AgentResult
 
