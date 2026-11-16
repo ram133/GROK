@@ -7,6 +7,7 @@ Optional free-tier LLM / search backends can be plugged in later.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from pathlib import Path
 from typing import Any
 
 
@@ -59,11 +60,70 @@ class SystemInfoTool(Tool):
         }
 
 
+class ListDirTool(Tool):
+    """List files in a directory (local, free). Defaults to current dir."""
+
+    name = "list_dir"
+    description = "List files and folders in a path (default: current directory)."
+
+    def run(self, path: str = ".") -> list[str]:
+        p = Path(path).expanduser().resolve()
+        if not p.exists():
+            return [f"Path does not exist: {p}"]
+        if not p.is_dir():
+            return [f"Not a directory: {p}"]
+        try:
+            return sorted([f.name + ("/" if f.is_dir() else "") for f in p.iterdir()])[:80]
+        except Exception as e:
+            return [f"Error: {e}"]
+
+
+class CalcTool(Tool):
+    """Tiny safe calculator — free, no network."""
+
+    name = "calc"
+    description = "Evaluate a simple math expression (numbers and + - * / ** () only)."
+
+    def run(self, expression: str = "") -> str:
+        expr = expression.strip()
+        if not expr:
+            return "Provide an expression, e.g. 2 + 2 * 10"
+        allowed = set("0123456789+-*/().% ** ")
+        if not all(c in allowed for c in expr.replace("**", "")):
+            return "Only basic arithmetic is allowed."
+        try:
+            # Restricted eval for simple math
+            result = eval(expr, {"__builtins__": {}}, {})
+            return str(result)
+        except Exception as e:
+            return f"Calc error: {e}"
+
+
+class FreeSearchStubTool(Tool):
+    """Placeholder for free web search. Documents how to plug a real free provider later."""
+
+    name = "web_search"
+    description = "Stub for free web search. Returns guidance until a free provider is configured."
+
+    def run(self, query: str = "") -> str:
+        return (
+            f"Search stub for: {query}\n\n"
+            "No free search backend is hard-wired yet (keeps the core zero-dependency).\n"
+            "To add one later: implement a Tool that calls a free search API or "
+            "a local index, then register it in AVAILABLE_TOOLS.\n"
+            "Recommended free directions: DuckDuckGo HTML scrape (careful with ToS), "
+            "or any free search API that does not require a credit card."
+        )
+
+
 # Registry of available tools (grows over time)
 AVAILABLE_TOOLS: dict[str, type[Tool]] = {
     "echo": EchoTool,
     "local_time": LocalTimeTool,
     "system_info": SystemInfoTool,
+    "list_dir": ListDirTool,
+    "calc": CalcTool,
+    "web_search": FreeSearchStubTool,
 }
 
 
