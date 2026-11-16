@@ -2,7 +2,7 @@
 
 Prime directive: FREE.
 - Works with zero API keys (high-signal local patterns).
-- Optional free-tier LLM backends can be enabled via env vars later.
+- Optional free-tier LLM backends via env vars (Groq / OpenRouter free / Gemini free etc.).
 - Tools layer stays thin and local-first.
 """
 
@@ -15,8 +15,14 @@ from rich.panel import Panel
 from rich.markdown import Markdown
 
 from .tools import get_tool, list_tools
+from .llm import call_llm, llm_available
 
 console = Console()
+
+SYSTEM_PROMPT = """You are GROK, a personal AI agent toolkit focused on high-signal, structured work product.
+Prefer clear thesis → key points → next action format.
+Be concise, practical, and free-first (no paid services required for core value).
+Never invent facts you cannot support."""
 
 
 class AgentResult(BaseModel):
@@ -46,7 +52,15 @@ class Agent:
             console.print(Panel(f"[bold cyan]{self.name}[/] received task", title="Agent", border_style="cyan"))
             console.print(f"[dim]{task}[/]\n")
 
+        mode = "local-free"
         output = self._dispatch(task)
+
+        # Optional free LLM enhancement (never required)
+        if llm_available() and not self._is_simple_tool_task(task):
+            llm_out = call_llm(task, system=SYSTEM_PROMPT)
+            if llm_out:
+                output = llm_out
+                mode = "free-llm"
 
         result = AgentResult(
             task=task,
@@ -54,8 +68,9 @@ class Agent:
             success=True,
             metadata={
                 "agent": self.name,
-                "version": "0.1.2",
-                "mode": "local-free",
+                "version": "0.1.3",
+                "mode": mode,
+                "llm_configured": llm_available(),
             },
         )
 
@@ -63,6 +78,14 @@ class Agent:
             console.print(Panel(Markdown(output), title="Result", border_style="green"))
 
         return result
+
+    def _is_simple_tool_task(self, task: str) -> bool:
+        t = task.lower().strip()
+        return (
+            t.startswith("tool:")
+            or t.startswith("/tool ")
+            or any(k in t for k in ["list tools", "what tools", "available tools", "local time", "system info"])
+        )
 
     def _dispatch(self, task: str) -> str:
         """Route the task to the most appropriate response pattern."""
@@ -89,11 +112,20 @@ class Agent:
             if tool:
                 info = tool.run()
                 return "## System Info\n\n" + "\n".join(f"- **{k}**: {v}" for k, v in info.items())
+        if any(k in t for k in ["list dir", "list files", "ls "]):
+            tool = get_tool("list_dir")
+            if tool:
+                items = tool.run()
+                return "## Directory listing\n\n" + "\n".join(f"- {i}" for i in items)
+        if t.startswith("calc ") or t.startswith("calculate "):
+            expr = task.split(maxsplit=1)[1] if " " in task else ""
+            tool = get_tool("calc")
+            if tool:
+                return f"**Calc** → `{tool.run(expression=expr)}`"
 
         return self._default(task)
 
     def _run_named_tool(self, task: str) -> str:
-        # crude parser: "tool:name arg" or "/tool name"
         parts = task.replace("tool:", "").replace("/tool", "").strip().split(maxsplit=1)
         name = parts[0] if parts else ""
         arg = parts[1] if len(parts) > 1 else ""
@@ -103,6 +135,12 @@ class Agent:
         try:
             if name == "echo":
                 result = tool.run(text=arg)
+            elif name == "list_dir":
+                result = tool.run(path=arg or ".")
+            elif name == "calc":
+                result = tool.run(expression=arg)
+            elif name == "web_search":
+                result = tool.run(query=arg)
             else:
                 result = tool.run()
             return f"**Tool `{name}` result**\n\n```\n{result}\n```"
@@ -111,10 +149,11 @@ class Agent:
 
     def _list_tools(self) -> str:
         tools = list_tools()
-        lines = ["## Available Tools (all free / local)\n"]
+        lines = ["## Available Tools (all free / local by default)\n"]
         for t in tools:
             lines.append(f"- **{t['name']}**: {t['description']}")
-        lines.append("\nUsage: `tool:echo hello` or just ask naturally.")
+        lines.append("\nUsage: `tool:echo hello`, `tool:calc 2+2*10`, `tool:list_dir .`")
+        lines.append("\nOptional free LLM: set GROK_LLM_BASE_URL + GROK_LLM_API_KEY + GROK_LLM_MODEL")
         return "\n".join(lines)
 
     def _research(self, task: str) -> str:
@@ -210,5 +249,5 @@ You should be able to demonstrate clear value to a stranger in under two minutes
 ### Next Action
 Tell me the single most important concrete result you need and I will produce it immediately.
 
-(All core GROK capabilities remain free.)
+(All core GROK capabilities remain free. Optional free LLM activates automatically when GROK_LLM_* env vars are set.)
 """
