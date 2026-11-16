@@ -13,17 +13,21 @@ This list prioritizes no-credit-card, no-paid-subscription options that actually
 | **OpenRouter** | Models ending in `:free` | No | One key, many free models. Rotating list. 20 RPM / 50 RPD base |
 | **Cloudflare Workers AI** | Multiple models | No | 10k Neurons/day free |
 | **NVIDIA NIM / build.nvidia.com** | Selected open models marked Free Endpoint | No | Good for open weights |
+| **Ollama (local)** | Any GGUF you download | No | Fully offline |
 
-**How to use in GROK** (coming / experimental):
+## How to enable a free LLM inside GROK
 
 ```bash
 export GROK_LLM_BASE_URL="https://api.groq.com/openai/v1"
-export GROK_LLM_API_KEY="gsk_..."
-export GROK_LLM_MODEL="llama-3.3-70b-versatile"  # or any free model
+export GROK_LLM_API_KEY="gsk_your_free_key"
+export GROK_LLM_MODEL="llama-3.3-70b-versatile"
+
 grok "your task"
 ```
 
-If no key is set, GROK falls back to its high-quality local rule engine (always free, always works).
+If any variable is missing or the call fails, GROK automatically falls back to its high-quality local rule engine. Zero keys = still fully useful.
+
+See `examples/with_free_llm.py` and `AGENTS.md`.
 
 ## Free Coding Agents & Tools
 
@@ -32,17 +36,17 @@ If no key is set, GROK falls back to its high-quality local rule engine (always 
 - **OpenCode** — Terminal agent with free model routes.
 - **Continue.dev** — Open-source IDE agent.
 - **Ollama** + local models — Fully offline, zero cost after download.
-- **GitHub Copilot Free** — Limited completions + chat (no card for basic free tier in many regions).
+- **GitHub Copilot Free** — Limited completions + chat.
 - **Cursor Hobby** — Free plan with limits.
 - **Google Antigravity** — Free individual agentic IDE plan (weekly limits).
 
 ## Free Chat & Research
 
-- Google Gemini (web + app) — Generous free tier including Deep Research features on free.
-- ChatGPT Free — Unlimited everyday text.
-- Perplexity Free — Unlimited basic search + limited Pro.
-- Claude Free — Strong reasoning, usage windows.
-- DeepSeek, Qwen, Kimi free web interfaces.
+- Google Gemini (web + app)
+- ChatGPT Free
+- Perplexity Free
+- Claude Free
+- DeepSeek, Qwen, Kimi free web interfaces
 
 ## Local / Fully Offline
 
