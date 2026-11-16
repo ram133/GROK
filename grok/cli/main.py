@@ -1,4 +1,4 @@
-"""GROK CLI — beautiful and fast."""
+"""GROK CLI — beautiful and fast. Free-first."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from grok.core.agent import Agent
 
 app = typer.Typer(
     name="grok",
-    help="GROK — Personal AI Agent Toolkit",
+    help="GROK — Personal AI Agent Toolkit (FREE core)",
     add_completion=False,
     rich_markup_mode="rich",
 )
@@ -34,7 +34,7 @@ def run(
 def version():
     """Show version."""
     from grok import __version__
-    console.print(f"[bold]GROK[/] v{__version__}")
+    console.print(f"[bold]GROK[/] v{__version__} — free-first personal agent toolkit")
 
 
 @app.callback(invoke_without_command=True)
@@ -42,11 +42,13 @@ def main(ctx: typer.Context):
     if ctx.invoked_subcommand is None:
         console.print(Panel(
             "[bold cyan]GROK[/] — Personal AI Agent Toolkit\n\n"
+            "Prime directive: [bold]FREE[/]. Zero keys required for core value.\n\n"
             "Usage: [bold]grok \"your task here\"[/]\n\n"
             "Examples:\n"
             "  grok \"Research personal AI agent trends\"\n"
             "  grok \"Write a sharp LinkedIn post about shipping with AI\"\n"
-            "  grok \"Make a 7-day plan to launch a side project\"",
+            "  grok \"Make a 7-day plan to launch a side project\"\n"
+            "  grok \"list tools\"",
             title="Welcome",
             border_style="cyan",
         ))
