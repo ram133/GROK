@@ -1,4 +1,10 @@
-"""Core Agent runner — the heart of GROK."""
+"""Core Agent runner — the heart of GROK.
+
+Prime directive: FREE.
+- Works with zero API keys (high-signal local patterns).
+- Optional free-tier LLM backends can be enabled via env vars later.
+- Tools layer stays thin and local-first.
+"""
 
 from __future__ import annotations
 
@@ -8,7 +14,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.markdown import Markdown
 
-from .tools import get_tool
+from .tools import get_tool, list_tools
 
 console = Console()
 
@@ -25,9 +31,9 @@ class Agent:
     """
     Personal AI agent focused on producing useful, structured work product.
 
-    Design goals for v0.1:
-    - Immediately useful without external API keys
-    - Clean extension points for real tools and memory
+    Design goals:
+    - Immediately useful without external API keys (FREE)
+    - Clean extension points for real tools and optional free LLMs
     - Consistent, high-signal output format
     """
 
@@ -48,7 +54,8 @@ class Agent:
             success=True,
             metadata={
                 "agent": self.name,
-                "version": "0.1.1",
+                "version": "0.1.2",
+                "mode": "local-free",
             },
         )
 
@@ -59,18 +66,56 @@ class Agent:
 
     def _dispatch(self, task: str) -> str:
         """Route the task to the most appropriate response pattern."""
-        t = task.lower()
+        t = task.lower().strip()
 
-        if any(k in t for k in ["research", "trends", "analyze", "summary", "brief", "report"]):
+        # Explicit tool requests
+        if t.startswith("tool:") or t.startswith("/tool "):
+            return self._run_named_tool(t)
+        if any(k in t for k in ["list tools", "what tools", "available tools"]):
+            return self._list_tools()
+
+        if any(k in t for k in ["research", "trends", "analyze", "summary", "brief", "report", "opportunities"]):
             return self._research(task)
         if any(k in t for k in ["write", "post", "thread", "email", "content", "linkedin", "tweet"]):
             return self._content(task)
-        if any(k in t for k in ["plan", "roadmap", "strategy", "schedule", "launch"]):
+        if any(k in t for k in ["plan", "roadmap", "strategy", "schedule", "launch", "7-day"]):
             return self._plan(task)
-        if any(k in t for k in ["tool", "echo"]):
-            return self._tool_demo(task)
+        if any(k in t for k in ["time", "date", "what time"]):
+            tool = get_tool("local_time")
+            if tool:
+                return f"Current local time: **{tool.run()}**"
+        if any(k in t for k in ["system", "python version", "platform"]):
+            tool = get_tool("system_info")
+            if tool:
+                info = tool.run()
+                return "## System Info\n\n" + "\n".join(f"- **{k}**: {v}" for k, v in info.items())
 
         return self._default(task)
+
+    def _run_named_tool(self, task: str) -> str:
+        # crude parser: "tool:name arg" or "/tool name"
+        parts = task.replace("tool:", "").replace("/tool", "").strip().split(maxsplit=1)
+        name = parts[0] if parts else ""
+        arg = parts[1] if len(parts) > 1 else ""
+        tool = get_tool(name)
+        if not tool:
+            return f"Unknown tool `{name}`. Available tools:\n" + self._list_tools()
+        try:
+            if name == "echo":
+                result = tool.run(text=arg)
+            else:
+                result = tool.run()
+            return f"**Tool `{name}` result**\n\n```\n{result}\n```"
+        except Exception as e:
+            return f"Tool `{name}` failed: {e}"
+
+    def _list_tools(self) -> str:
+        tools = list_tools()
+        lines = ["## Available Tools (all free / local)\n"]
+        for t in tools:
+            lines.append(f"- **{t['name']}**: {t['description']}")
+        lines.append("\nUsage: `tool:echo hello` or just ask naturally.")
+        return "\n".join(lines)
 
     def _research(self, task: str) -> str:
         return f"""## Research Brief
@@ -83,14 +128,16 @@ Personal AI agents are shifting from novelty chat interfaces to persistent syste
 
 ### Key Points
 1. **Outcome ownership beats conversation** — users pay for finished work, not dialogue.
-2. **Local-first + selective cloud** is the pragmatic architecture for most individuals and small teams.
+2. **Local-first + selective free-tier cloud** is the pragmatic architecture for most individuals and small teams.
 3. **Thin orchestration + strong tools** is currently outperforming monolithic agent frameworks.
 4. **Trust and auditability** are becoming purchase criteria, especially for business use.
+5. **Free tiers of strong models** (Gemini Flash, Groq open models, OpenRouter :free) make high-capability agents accessible without credit cards.
 
 ### Implications
 - Build for daily use, not demos.
 - Instrument everything so users can see what the agent actually did.
 - Start with one high-value recurring task and expand from there.
+- Prefer free or local backends by default.
 
 ### Next Step
 I can expand this into a full one-page brief, a competitor landscape table, or a concrete implementation plan. Tell me which one you want.
@@ -104,13 +151,15 @@ I can expand this into a full one-page brief, a competitor landscape table, or a
 
 ### Hook
 Most people still treat AI like a smarter search box.  
-The ones pulling ahead treat it like a junior employee who never clocks out.
+The ones pulling ahead treat it like a junior employee who never clocks out — and they keep the core free.
 
 ### Body
 The difference is not the model.  
 It is whether you give the system ownership of a recurring outcome and then measure the result.
 
 When an agent owns the outcome, you stop prompting and start managing.
+
+GROK is built under a strict free-first rule: useful on day one with zero paid services, optional free-tier LLMs later.
 
 ### Close
 What is the one task you still do manually every week that an agent should own instead?
@@ -127,31 +176,25 @@ What is the one task you still do manually every week that an agent should own i
 
 ### Phase 1 — Clarity (Day 1)
 - Define the single success metric
-- Identify the smallest useful version that can be shipped
+- Identify the smallest useful version that can be shipped for free
 - List the three highest-leverage actions
 
 ### Phase 2 — Build (Days 2–5)
-- Ship the smallest working version
+- Ship the smallest working version (local-first)
 - Get feedback from at least three real users
 - Instrument basic usage signals
+- Optionally plug in free LLM tiers if they improve quality
 
 ### Phase 3 — Tighten (Days 6–7)
 - Fix the biggest friction points
-- Document the happy path
-- Decide whether to open-source, soft-launch, or both
+- Document the happy path and the free constraints
+- Decide whether to open-source more, soft-launch, or both
 
 ### Success Criteria
-You should be able to demonstrate clear value to a stranger in under two minutes by the end of the week.
+You should be able to demonstrate clear value to a stranger in under two minutes by the end of the week — without asking them for a credit card.
 
 **Want this turned into a day-by-day checklist with concrete outputs?**
 """
-
-    def _tool_demo(self, task: str) -> str:
-        tool = get_tool("echo")
-        if tool:
-            result = tool.run(text=task)
-            return f"Tool layer is live.\n\nEcho tool returned:\n```\n{result}\n```"
-        return "Tool layer is present but no matching tool was found."
 
     def _default(self, task: str) -> str:
         return f"""## Task Received
@@ -161,9 +204,11 @@ You should be able to demonstrate clear value to a stranger in under two minutes
 ### Recommended Approach
 1. Clarify the exact outcome you want
 2. Break it into the smallest useful units of work
-3. Execute the highest-leverage piece first
+3. Execute the highest-leverage piece first (using free / local tools)
 4. Measure the result and iterate
 
 ### Next Action
 Tell me the single most important concrete result you need and I will produce it immediately.
+
+(All core GROK capabilities remain free.)
 """
