@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Quick demonstration of GROK."""
+"""Quick demonstration of GROK (v0.1.2 — free-first)."""
 
 from grok import Agent
 
@@ -14,6 +14,10 @@ def main():
 
     print("\n=== Example 3: Planning ===")
     agent.run("Create a realistic 7-day plan to launch a useful open-source AI tool")
+
+    print("\n=== Example 4: Tools ===")
+    agent.run("list tools")
+    agent.run("tool:local_time")
 
 if __name__ == "__main__":
     main()
